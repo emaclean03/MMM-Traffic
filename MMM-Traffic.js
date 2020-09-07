@@ -121,6 +121,13 @@ Module.register('MMM-Traffic', {
       trafficInfo.innerHTML = this.config.prependText + ' ' + this.commute;
     } else {
       //leave-by time
+      let dt = new Date();
+      let AmOrPm = this.leaveBy >= 12 ? 'pm' : 'am';
+      let time = (this.leaveBy % 12) || 12;
+      let minutes = dt.getMinutes();
+
+      this.leaveBy = time + ":" + minutes + " " + AmOrPm;
+
       trafficInfo.innerHTML = this.config.leaveByText + ' ' + this.leaveBy;
     }
     commuteInfo.appendChild(trafficInfo);
@@ -306,6 +313,7 @@ Module.register('MMM-Traffic', {
       this.loaded = true;
       this.updateDom(1000);
     } else if (notification === 'TRAFFIC_TIMING' && payload.url === this.url) {
+
       Log.info('received TRAFFIC_TIMING');
       this.leaveBy = payload.commute;
       this.commute = payload.commute; //support for hideOffHours
