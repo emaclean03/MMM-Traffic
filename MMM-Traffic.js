@@ -120,15 +120,21 @@ Module.register('MMM-Traffic', {
       //commute time
       trafficInfo.innerHTML = this.config.prependText + ' ' + this.commute;
     } else {
-      //leave-by time
-      let dt = new Date();
-      let AmOrPm = this.leaveBy >= 12 ? 'pm' : 'am';
-      let time = (this.leaveBy % 12) || 12;
-      let minutes = dt.getMinutes();
-
-      this.leaveBy = time + ":" + minutes + " " + AmOrPm;
-
-      trafficInfo.innerHTML = this.config.leaveByText + ' ' + this.leaveBy;
+      if (!this.config.arrival_time) {
+        //commute time
+        trafficInfo.innerHTML = this.config.prependText + ' ' + this.commute;
+      } else {
+        //leave-by time
+        if(this.config.twelveHour)
+        {
+          const timeString12hr = new Date('1970-01-01T' + this.leaveBy + 'Z')
+              .toLocaleTimeString({},
+                  {timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric'}
+              );
+          trafficInfo.innerHTML = this.config.leaveByText + " " + timeString12hr;
+        }else{
+          trafficInfo.innerHTML = this.config.leaveByText + " " + this.leaveBy;//
+        }
     }
     commuteInfo.appendChild(trafficInfo);
 
